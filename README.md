@@ -12,7 +12,7 @@ Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch).
 
 An optimizer agent (Claude Opus, running in Claude Code) iteratively rewrites a support agent's system prompt. Each iteration, it runs Claude Sonnet against 10 frozen adversarial test cases, collects accuracy signals from a proportional scorer, keeps improvements, reverts regressions, and repeats. The whole cycle is driven by [`program.md`](program.md), which defines the optimization strategy. The human writes the meta-instructions and goes to sleep.
 
-The agent under test is a customer support bot for a fictional SaaS company, realistic enough that the failure modes mirror production: attention dilution from long account contexts, deep policy chains where shortcuts give wrong answers, and the model's stubborn instinct to call lookup tools instead of acting on data it already has.
+Here is how this project compares to Karpathy's training optimisation loop.
 
 | | Karpathy's autoresearch | This project |
 |---|---|---|
