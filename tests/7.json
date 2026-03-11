@@ -1,0 +1,73 @@
+{
+  "id": "TC-7",
+  "category": "compound",
+  "difficulty_level": 8,
+  "bottlenecks": [
+    "deep_chain",
+    "attention_dilution",
+    "strong_signal_inhibition"
+  ],
+  "ordered": false,
+  "user_message": "Hi, we need to sort out a few things. First, our CFO wants to know about the charge on our account from about 5 weeks ago \u2014 she thinks we might be eligible for a refund. Also, we've been having some issues with the Jira integration not syncing properly. And one of our team members, Alex, mentioned he can't access the analytics dashboard anymore. Can you help with all of this?",
+  "account_context": {
+    "customer_id": "NXS-55820",
+    "plan_type": "Enterprise",
+    "billing_region": "United Kingdom",
+    "payment_method": "wire_transfer",
+    "charge_date": "2026-02-01",
+    "charge_amount": 62000.0,
+    "charge_id": "CHG-90012",
+    "subscription_id": "SUB-55820-A",
+    "verification_status": "verified_business",
+    "sso_integration": "active",
+    "sso_activation_date": "2026-02-05",
+    "referral_status": "standard",
+    "fraud_flag": false,
+    "legal_hold": false,
+    "active_chargeback": false,
+    "account_created": "2026-02-01",
+    "annual_contract_value": 62000.0,
+    "billing_contact": "James Whitfield",
+    "company_name": "Whitfield & Partners LLP",
+    "subscription_count": 1,
+    "seats": 50,
+    "usage_last_30d": {
+      "api_calls": 85000,
+      "active_users": 42
+    },
+    "support_tickets_open": 3,
+    "integrations_active": [
+      "jira",
+      "slack",
+      "sso_okta"
+    ],
+    "feature_flags": [
+      "beta_analytics",
+      "custom_branding",
+      "advanced_reporting"
+    ],
+    "last_login": "2026-03-11",
+    "msa_on_file": true,
+    "msa_refund_terms": "silent"
+  },
+  "expected_tool_calls": [
+    {
+      "tool": "escalate_to_account_manager",
+      "args": {
+        "customer_id": "NXS-55820",
+        "reason": "enterprise_negotiation"
+      }
+    }
+  ],
+  "reasoning_chain": [
+    "Step 1: Enterprise plan \u2192 cancellations/refund requests must be escalated to account manager (Section 3.2).",
+    "Step 2: MSA is on file but silent on refunds \u2192 follows Annual schedule, BUT Enterprise refund requests still must be reviewed against MSA.",
+    "Step 3: Enterprise account requesting refund = commercial/relationship matter \u2192 escalate_to_account_manager.",
+    "Step 4: Multiple distracting issues (Jira, analytics) are technical support, not the agent's domain.",
+    "PREMATURE: Model tries to compute partial refund (day 38 in 31-90 window) instead of recognizing Enterprise accounts need account manager involvement."
+  ],
+  "wrong_but_tempting": {
+    "tool": "issue_partial_refund",
+    "why_tempting": "Day 38 is in 31-90 window. MSA is silent so Annual rules seem to apply. Easy to miss that Enterprise refund requests need account manager review."
+  }
+}

@@ -1,0 +1,382 @@
+[
+  {
+    "name": "issue_full_refund",
+    "description": "Issue a complete refund of a specific charge back to the customer's original payment method. Use this when the customer is entitled to a 100% money-back return of a charge — for example, within the 30-day guarantee window, after an accidental trial-to-paid conversion, under EU cooling-off rights, due to a verified service outage, or to correct a billing error. This is a terminal financial action: once issued, the full charge amount is reversed. Do not use this for partial refunds, account credits, or situations where only a percentage of the charge should be returned.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "charge_id", "reason"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "charge_id": {
+          "type": "string",
+          "description": "The unique identifier for the specific charge to be fully refunded."
+        },
+        "reason": {
+          "type": "string",
+          "enum": ["within_30_day", "trial_conversion", "eu_cooling_period", "service_outage", "billing_error"],
+          "description": "The policy reason justifying the full refund. 'within_30_day': charge is within the 30-day money-back guarantee. 'trial_conversion': customer was incorrectly or unexpectedly converted from trial to paid. 'eu_cooling_period': customer is exercising EU 14-day cooling-off rights. 'service_outage': a verified platform outage affected the customer during the billing period. 'billing_error': an internal billing system error caused an incorrect charge."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional free-text notes to attach to the refund record for audit purposes."
+        }
+      }
+    }
+  },
+  {
+    "name": "issue_partial_refund",
+    "description": "Issue a partial refund of a specific charge, either as a fixed dollar amount or a portion of the original charge. Use this when the customer is entitled to some money back but not the full charge — for example, charges between 30 and 90 days old that qualify under the partial refund policy, prorated amounts after mid-cycle cancellation, compensation for degraded (but not fully unavailable) service, or goodwill gestures. The refund goes back to the original payment method. Do not use this for full refunds, account credits for future use, or cases requiring human billing review.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "charge_id", "amount", "reason"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "charge_id": {
+          "type": "string",
+          "description": "The unique identifier for the specific charge to be partially refunded."
+        },
+        "amount": {
+          "type": "number",
+          "description": "The dollar amount to refund. Must be greater than zero and less than or equal to the original charge amount."
+        },
+        "reason": {
+          "type": "string",
+          "enum": ["policy_30_90_day", "prorated_cancellation", "service_degradation", "goodwill"],
+          "description": "The policy reason for the partial refund. 'policy_30_90_day': charge is between 30 and 90 days old, qualifying for partial (not full) refund. 'prorated_cancellation': customer cancelled mid-billing-cycle and is owed unused time. 'service_degradation': service was degraded but not fully unavailable. 'goodwill': discretionary partial refund to maintain customer relationship."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional free-text notes to attach to the refund record for audit purposes."
+        }
+      }
+    }
+  },
+  {
+    "name": "issue_credit",
+    "description": "Apply a credit to the customer's Nexus account balance for future use. Unlike refunds, credits do not return money to the customer's payment method — they reduce the amount owed on future invoices. Use this for courtesy gestures, compensation for service disruptions where a refund is not warranted, retention offers, or to correct billing without reversing a charge. Credits expire after a configurable number of days (default 90). Do not use this when the customer explicitly asks for money back to their card or bank account.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "amount", "reason"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "amount": {
+          "type": "number",
+          "description": "The dollar amount to credit to the customer's account. Must be greater than zero."
+        },
+        "reason": {
+          "type": "string",
+          "enum": ["courtesy", "service_disruption", "retention", "billing_adjustment"],
+          "description": "The reason for issuing the credit. 'courtesy': a goodwill gesture unrelated to a specific incident. 'service_disruption': compensation for a service issue where a direct refund is not applicable. 'retention': an incentive to retain a customer who is considering leaving. 'billing_adjustment': correcting an account balance without reversing a payment."
+        },
+        "expiry_days": {
+          "type": "integer",
+          "description": "Number of days until the credit expires. Defaults to 90 if not specified.",
+          "default": 90
+        }
+      }
+    }
+  },
+  {
+    "name": "escalate_to_billing",
+    "description": "Escalate a billing issue to the human billing team for manual review and resolution. Use this when automated refund or credit tools cannot resolve the situation — for example, active chargeback disputes from the customer's bank, payment method problems that prevent processing, invoice discrepancies that require manual audit, tax-related disputes, or issues involving wire transfers. This does not itself resolve the issue; it creates a ticket for the billing team. Do not use this for straightforward refunds, credits, or non-billing escalations.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "reason"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "reason": {
+          "type": "string",
+          "enum": ["chargeback_dispute", "payment_method_issue", "invoice_discrepancy", "tax_dispute", "wire_transfer_issue"],
+          "description": "The category of billing issue requiring human review. 'chargeback_dispute': the customer's bank has initiated or the customer is threatening a chargeback. 'payment_method_issue': problems with the stored payment method preventing charge or refund processing. 'invoice_discrepancy': the invoice does not match expected charges and requires manual audit. 'tax_dispute': disagreement over tax amounts, exemptions, or jurisdiction. 'wire_transfer_issue': issues specific to wire transfer payments or refunds."
+        },
+        "charge_id": {
+          "type": "string",
+          "description": "The specific charge ID related to the dispute, if applicable."
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["normal", "high", "urgent"],
+          "description": "The urgency level for the billing team. 'normal': standard queue. 'high': expedited review. 'urgent': immediate attention required (e.g., active chargeback with deadline)."
+        }
+      }
+    }
+  },
+  {
+    "name": "escalate_to_compliance",
+    "description": "Escalate an issue to the compliance and legal team for regulatory, data protection, or legal review. Use this for GDPR data access or portability requests, EU cooling-off period cases involving wire transfers (which cannot be auto-refunded), legal hold actions on accounts, data deletion (right to be forgotten) requests, or situations requiring regulatory review. This team handles obligations that carry legal deadlines and penalties. Do not use this for routine billing disputes, general account management, or non-regulatory customer complaints.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "reason"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "reason": {
+          "type": "string",
+          "enum": ["gdpr_data_request", "eu_cooling_period_wire_transfer", "legal_hold_action", "data_deletion_request", "regulatory_review"],
+          "description": "The type of compliance issue. 'gdpr_data_request': customer is requesting access to or export of their personal data under GDPR. 'eu_cooling_period_wire_transfer': EU cooling-off refund involving a wire transfer payment that cannot be processed automatically. 'legal_hold_action': a legal hold must be placed on or removed from an account. 'data_deletion_request': customer is requesting deletion of their data (right to be forgotten). 'regulatory_review': the situation involves regulatory obligations not covered by the other categories."
+        },
+        "charge_id": {
+          "type": "string",
+          "description": "The specific charge ID involved, if applicable (e.g., for wire transfer refund cases)."
+        },
+        "region": {
+          "type": "string",
+          "description": "The customer's region or jurisdiction relevant to the compliance matter (e.g., 'EU', 'UK', 'California')."
+        }
+      }
+    }
+  },
+  {
+    "name": "escalate_to_account_manager",
+    "description": "Escalate an issue to the assigned account manager for relationship-level or commercial resolution. Use this when a customer is at risk of churning and needs a retention conversation, when enterprise contract negotiations are needed, when an action is requested on an account that has not passed identity verification, when a partner channel is involved, or when custom pricing arrangements are required. This is not for billing disputes or compliance matters — it is for commercial and relationship decisions that require human judgment.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "reason"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "reason": {
+          "type": "string",
+          "enum": ["retention_risk", "enterprise_negotiation", "unverified_account_action", "partner_escalation", "custom_pricing"],
+          "description": "The reason for account manager involvement. 'retention_risk': the customer has expressed intent to leave or shows signs of churn. 'enterprise_negotiation': the customer needs enterprise-tier contract or terms discussion. 'unverified_account_action': a sensitive action was requested but identity verification has not been completed or has failed. 'partner_escalation': the issue involves a partner or reseller channel. 'custom_pricing': the customer is requesting pricing outside standard tiers."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional context for the account manager about the situation and what has already been attempted."
+        }
+      }
+    }
+  },
+  {
+    "name": "cancel_subscription",
+    "description": "Cancel a customer's active subscription on the Nexus platform. This terminates the subscription either immediately or at the end of the current billing period. Use this when a customer explicitly requests cancellation, when an account must be terminated due to non-payment or policy violation, or when accounts are being consolidated. If the customer may be retained, consider escalating to the account manager first. For temporary pauses rather than permanent cancellation, use pause_subscription instead.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "reason"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "subscription_id": {
+          "type": "string",
+          "description": "The specific subscription to cancel, if the customer has multiple subscriptions. If omitted, the primary subscription is assumed."
+        },
+        "reason": {
+          "type": "string",
+          "enum": ["customer_request", "non_payment", "policy_violation", "account_consolidation"],
+          "description": "The reason for cancellation. 'customer_request': the customer has asked to cancel. 'non_payment': the account has failed payment collection. 'policy_violation': the account has violated terms of service. 'account_consolidation': the subscription is being merged into another account."
+        },
+        "effective_date": {
+          "type": "string",
+          "enum": ["immediate", "end_of_period"],
+          "description": "When the cancellation takes effect. 'immediate': cancel right now, potentially triggering a prorated refund. 'end_of_period': cancel at the end of the current paid billing cycle."
+        }
+      }
+    }
+  },
+  {
+    "name": "downgrade_plan",
+    "description": "Move a customer to a lower-tier subscription plan on the Nexus platform. Use this when a customer wants to reduce their plan level (e.g., from Enterprise to Professional, or Professional to Starter). The change can take effect immediately or at the next billing cycle. This adjusts features and pricing but keeps the subscription active. Do not use this for cancellations or for upgrades. If the customer is downgrading as a precursor to cancellation, consider whether escalation to the account manager for retention is appropriate first.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "new_plan"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "new_plan": {
+          "type": "string",
+          "enum": ["starter", "professional", "enterprise"],
+          "description": "The target plan tier to downgrade to. Must be a lower tier than the customer's current plan."
+        },
+        "effective_date": {
+          "type": "string",
+          "enum": ["immediate", "next_billing_cycle"],
+          "description": "When the plan change takes effect. 'immediate': switch now, potentially triggering a prorated credit. 'next_billing_cycle': switch at the start of the next billing period."
+        }
+      }
+    }
+  },
+  {
+    "name": "pause_subscription",
+    "description": "Temporarily pause a customer's subscription for a specified number of days. During the pause, the customer retains their account and data but loses access to paid features and is not billed. The subscription automatically resumes after the pause duration expires. Maximum pause duration is 90 days. Use this when a customer needs a temporary break rather than a permanent cancellation — for example, seasonal businesses, customers on leave, or those evaluating alternatives. Do not use this for permanent cancellations or for accounts with payment issues.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "duration_days"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "duration_days": {
+          "type": "integer",
+          "description": "Number of days to pause the subscription. Must be between 1 and 90.",
+          "maximum": 90,
+          "minimum": 1
+        },
+        "reason": {
+          "type": "string",
+          "description": "Optional reason for the pause, recorded for internal tracking."
+        }
+      }
+    }
+  },
+  {
+    "name": "extend_trial",
+    "description": "Extend a customer's active trial period by a specified number of days. Maximum extension is 14 days. Use this when a customer needs more time to evaluate the Nexus platform before committing to a paid plan — for example, if they experienced onboarding delays, had limited usage during the initial trial, or are actively evaluating and need a few more days. The customer must currently be on an active trial. Do not use this for paid subscription adjustments, and do not use issue_credit or issue_partial_refund as alternatives to a trial extension.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "extension_days"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "extension_days": {
+          "type": "integer",
+          "description": "Number of days to extend the trial. Must be between 1 and 14.",
+          "maximum": 14,
+          "minimum": 1
+        },
+        "reason": {
+          "type": "string",
+          "description": "Optional reason for the extension, recorded for internal tracking."
+        }
+      }
+    }
+  },
+  {
+    "name": "lookup_order",
+    "description": "Look up order and charge details for a customer. Use this to retrieve information about a specific order by its order ID or charge ID, or to search for orders within a date range. This is a read-only lookup tool — it does not modify anything. Use it as a prerequisite step before issuing refunds, credits, or escalations when you need to confirm charge details, amounts, or dates. At least one of order_id, charge_id, or date_range should be provided to narrow the search.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "order_id": {
+          "type": "string",
+          "description": "The specific order ID to look up."
+        },
+        "charge_id": {
+          "type": "string",
+          "description": "The specific charge ID to look up."
+        },
+        "date_range": {
+          "type": "object",
+          "description": "A date range to search for orders within.",
+          "properties": {
+            "start": {
+              "type": "string",
+              "description": "Start date in ISO 8601 format (e.g., '2025-01-01')."
+            },
+            "end": {
+              "type": "string",
+              "description": "End date in ISO 8601 format (e.g., '2025-12-31')."
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "verify_identity",
+    "description": "Verify the identity of a customer before performing sensitive account actions. This initiates a verification flow using the specified method and returns whether verification succeeded. Use this as a prerequisite before actions like refunds, cancellations, or account changes when the customer's identity has not yet been confirmed in the current session. If verification fails or cannot be completed, escalate to the account manager with reason 'unverified_account_action' rather than proceeding with the requested action.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "method"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account to verify."
+        },
+        "method": {
+          "type": "string",
+          "enum": ["email_verification", "phone_verification", "sso_check", "manual_review"],
+          "description": "The verification method to use. 'email_verification': send a verification code to the account email. 'phone_verification': send a verification code via SMS to the account phone. 'sso_check': verify through the customer's SSO provider. 'manual_review': flag for manual identity review by the support team."
+        }
+      }
+    }
+  },
+  {
+    "name": "check_eligibility",
+    "description": "Check whether a customer is eligible for a specific action based on their account status, subscription state, billing history, and applicable policies. Use this before attempting refunds, cancellations, downgrades, trial extensions, or credits to determine what is allowed and what policy constraints apply. The response will indicate eligibility, applicable policy details, and any restrictions. This is a read-only check that does not modify the account.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "action_type"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "action_type": {
+          "type": "string",
+          "enum": ["refund", "cancellation", "downgrade", "trial_extension", "credit"],
+          "description": "The type of action to check eligibility for. 'refund': whether the customer qualifies for a full or partial refund. 'cancellation': whether the subscription can be cancelled and under what terms. 'downgrade': whether the customer can move to a lower plan tier. 'trial_extension': whether the customer's trial can be extended. 'credit': whether an account credit can be issued."
+        }
+      }
+    }
+  },
+  {
+    "name": "send_template_response",
+    "description": "Send a pre-written template response to the customer for common support scenarios. Use this to provide standardized information such as refund policy explanations, cancellation confirmations, escalation status notifications, trial details, or billing FAQs. Templates can be customized with dynamic fields. This sends a message to the customer — use it when you need to communicate policy or status information in a consistent, approved format. Do not use this as a substitute for taking action; pair it with the appropriate action tool.",
+    "input_schema": {
+      "type": "object",
+      "required": ["customer_id", "template_id"],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The unique identifier for the customer account."
+        },
+        "template_id": {
+          "type": "string",
+          "enum": ["refund_policy_explanation", "cancellation_confirmation", "escalation_notification", "trial_info", "billing_faq"],
+          "description": "The identifier for the template to send. 'refund_policy_explanation': explains the refund policy windows and eligibility. 'cancellation_confirmation': confirms a completed cancellation with next steps. 'escalation_notification': informs the customer their issue has been escalated. 'trial_info': provides details about the trial period and conversion. 'billing_faq': answers common billing questions."
+        },
+        "custom_fields": {
+          "type": "object",
+          "description": "Optional key-value pairs to populate dynamic placeholders in the template (e.g., {\"refund_amount\": \"$49.99\", \"effective_date\": \"2025-03-15\"})."
+        }
+      }
+    }
+  },
+  {
+    "name": "no_action",
+    "description": "Explicitly record a decision to take no action on the current support interaction. Use this when the appropriate response is to not perform any account modification — for example, when you need more information from the customer before proceeding, when the customer's message is purely informational and requires no action, when the issue has already been resolved, when the request is out of scope for automated support, or when you are waiting for identity verification to complete. This creates an audit record of the decision and reason.",
+    "input_schema": {
+      "type": "object",
+      "required": ["reason"],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "enum": ["need_clarification", "information_only", "already_resolved", "out_of_scope", "pending_verification"],
+          "description": "The reason for taking no action. 'need_clarification': the customer's request is ambiguous and more information is needed. 'information_only': the customer provided or requested information that does not require an account action. 'already_resolved': the issue the customer raised has already been addressed. 'out_of_scope': the request falls outside what automated support can handle. 'pending_verification': an action was requested but identity verification is still in progress."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional notes explaining the decision or what information is still needed."
+        }
+      }
+    }
+  }
+]

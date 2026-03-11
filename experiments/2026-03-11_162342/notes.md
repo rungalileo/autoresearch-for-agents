@@ -1,0 +1,9 @@
+What changed: Hybrid of exp 011 (best, 0.55) and exp 012 (0.525, uniquely solved TC-10). Key fusion: (1) 'NEVER call lookup or eligibility tools' from 012 (caps for emphasis). (2) 'compute everything yourself' from 012. (3) 'Always output tool calls, not text' from 011. (4) NOVEL: 'Think which rule applies, then call the action tool' — inner monologue directive that channels reasoning INTO rule matching rather than into information gathering. (5) Step 7 says 'Issue the refund tool' — explicit tool-call directive from 012. (6) Kept 'Don't process the request' and 'Don't ask to verify' from 011 for TC-2,4.
+
+Why: Exp 011 (0.55) and 012 (0.525) solve different subsets. 011 gets TC-9 (1.0) but not TC-10 (0.0). 012 gets TC-10 (1.0) and TC-5 (0.75) but not TC-1 (0.0) or TC-9 (0.0). Combining their strengths should improve both.
+
+Thesis: NEVER (caps) + compute-yourself should reduce lookup calls for TC-3,10. Think-then-act channels the model's reasoning toward rule matching. Issue-refund-tool should push TC-5 past text-only. The specific TC-2,4 qualifiers preserve those wins. Expecting 0.60+.
+
+Learnings: Exp 014 showed that metacognitive prompts ('is this read-only?') backfire by increasing tool salience. The key insight: don't mention the WRONG tools at all, instead strongly direct toward the RIGHT behavior. 'Think which rule applies' gives the model a reasoning task that doesn't involve tool lookup. This is the opposite of exp 014's approach — guiding toward correct behavior vs. guarding against incorrect behavior.
+
+If fails: Try removing 'one action only' from step header (012 didn't have it and got TC-10). Or try adding 'For multiple requests, handle the refund/escalation — ignore non-financial requests.'

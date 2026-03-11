@@ -1,0 +1,56 @@
+{
+  "id": "TC-8",
+  "category": "absence_detection",
+  "difficulty_level": 6,
+  "bottlenecks": [
+    "absence_detection",
+    "strong_signal_inhibition"
+  ],
+  "ordered": false,
+  "user_message": "I'd like to extend our trial by another week please. We're still evaluating and need more time before committing.",
+  "account_context": {
+    "customer_id": "NXS-91205",
+    "plan_type": "trial",
+    "billing_region": "Canada",
+    "payment_method": "none",
+    "verification_status": "unverified",
+    "sso_integration": "inactive",
+    "referral_status": "standard",
+    "fraud_flag": false,
+    "legal_hold": false,
+    "active_chargeback": false,
+    "account_created": "2026-02-11",
+    "trial_start_date": "2026-02-11",
+    "trial_end_date": "2026-03-11",
+    "trial_extensions_used": 2,
+    "billing_contact": "Priya Sharma",
+    "company_name": "Northwind Analytics",
+    "subscription_count": 0,
+    "seats": 5,
+    "usage_last_30d": {
+      "api_calls": 2100,
+      "active_users": 3
+    },
+    "support_tickets_open": 0,
+    "last_login": "2026-03-10"
+  },
+  "expected_tool_calls": [
+    {
+      "tool": "no_action",
+      "args": {
+        "reason": "out_of_scope",
+        "notes": "Customer has already used the maximum 2 trial extensions per Section 7.2."
+      }
+    }
+  ],
+  "reasoning_chain": [
+    "Step 1: Trial extension request. Trial is active (ends today).",
+    "Step 2: trial_extensions_used = 2. Section 7.2: max 2 per account lifetime.",
+    "Step 3: Cannot extend. Must inform customer.",
+    "MISS: Urgency (trial ends today) pushes toward action."
+  ],
+  "wrong_but_tempting": {
+    "tool": "extend_trial",
+    "why_tempting": "Simple request. Trial ends today. Easy to miss that extensions are maxed out."
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "id": "TC-9",
+  "category": "temporal_ambiguity",
+  "difficulty_level": 7,
+  "bottlenecks": [
+    "temporal_ambiguity",
+    "absence_detection"
+  ],
+  "ordered": false,
+  "user_message": "We'd like a full refund on our Annual subscription. We joined through your partner program and were told we'd have an extended refund window. It's been about 5 weeks since we were charged.",
+  "account_context": {
+    "customer_id": "NXS-84320",
+    "plan_type": "Annual",
+    "billing_region": "United States",
+    "payment_method": "credit_card",
+    "charge_date": "2026-02-04",
+    "charge_amount": 3650.0,
+    "charge_id": "CHG-72910",
+    "subscription_id": "SUB-84320-A",
+    "verification_status": "verified_business",
+    "sso_integration": "active",
+    "referral_status": "partner_referral",
+    "partner_id": "PTR-AccelTech",
+    "partner_onboarded_date": "2026-02-10",
+    "fraud_flag": false,
+    "legal_hold": false,
+    "active_chargeback": false,
+    "account_created": "2026-02-01",
+    "billing_contact": "Elaine Murphy",
+    "company_name": "Murphy & Associates LLC",
+    "subscription_count": 1,
+    "seats": 15,
+    "usage_last_30d": {
+      "api_calls": 6800,
+      "active_users": 9
+    },
+    "support_tickets_open": 0,
+    "last_login": "2026-03-10"
+  },
+  "expected_tool_calls": [
+    {
+      "tool": "issue_partial_refund",
+      "args": {
+        "customer_id": "NXS-84320",
+        "charge_id": "CHG-72910",
+        "amount": 3135.0,
+        "reason": "policy_30_90_day"
+      }
+    }
+  ],
+  "reasoning_chain": [
+    "Step 1: Customer claims partner referral extended window. referral_status = partner_referral. Charge 2026-02-04, today 2026-03-11 = 35 days.",
+    "Step 2: 35 days < 45 days (partner extended window) \u2192 full refund? NO.",
+    "Step 3: Section 2.4: 'Partner Referral status must have been recorded PRIOR to the charge in question.'",
+    "Step 4: partner_onboarded_date = 2026-02-10, charge_date = 2026-02-04. Partner status recorded AFTER charge.",
+    "Step 5: Extended window does not apply \u2192 standard 30-day window \u2192 35 days = 31-90 day partial refund.",
+    "Step 6: Annual plan: prorated = (330/365) * 3650 = 3300.00. Minus 5% early termination fee = 3135.00.",
+    "MISS: Model sees partner_referral status and assumes 45-day window without checking the onboarded date vs charge date."
+  ],
+  "wrong_but_tempting": {
+    "tool": "issue_full_refund",
+    "why_tempting": "Partner referral is active and day 35 < 45. Customer explicitly mentions the extended window. Easy to miss the 'recorded prior to charge' requirement."
+  }
+}

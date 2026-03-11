@@ -1,0 +1,288 @@
+{
+  "overall_score": 0.525,
+  "category_scores": {
+    "absence_detection": 0.25,
+    "attention_dilution": 0.0,
+    "compound": 0.5,
+    "deep_chain": 1.0,
+    "strong_signal_inhibition": 1.0,
+    "temporal_ambiguity": 0.375
+  },
+  "per_case": [
+    {
+      "id": "TC-1",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-73291",
+            "reason": "wire_transfer_issue",
+            "charge_id": "CHG-39102"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-73291",
+            "reason": "wire_transfer_issue",
+            "charge_id": "CHG-39102",
+            "priority": "high"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-2",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-71493",
+            "reason": "partner_escalation"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-71493",
+            "reason": "partner_escalation",
+            "notes": "Customer David Park (Park Industries LLC) is requesting a refund approximately 2 weeks after signing up (charge date 2026-02-25, CHG-88301, $2,400 Annual plan). Customer claims sales rep \"Sarah\" promised a 90-day money-back guarantee as part of a special promotion at the time of signup. Per policy, this sales promise claim must be verified by Account Management before any refund is processed. Do not process refund until the promise is confirmed or denied."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-3",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "issue_full_refund",
+          "args": {
+            "customer_id": "NXS-61938",
+            "charge_id": "CHG-44850",
+            "reason": "within_30_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "lookup_order",
+          "args": {
+            "customer_id": "NXS-61938",
+            "charge_id": "CHG-44850"
+          }
+        },
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-61938",
+            "action_type": "refund"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-4",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-44190",
+            "reason": "unverified_account_action"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "no_action",
+          "args": {
+            "message": "I can help with that cancellation. Since this is an immediate cancellation with a potential refund, I'll need to verify your identity first per our policy (cancellation requests require verification).\n\nCould you please confirm **two** of the following:\n\n1. The registered email address on the account\n2. The last four digits of the payment method on file\n3. The company name on the account"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-5",
+      "score": 0.75,
+      "expected": [
+        {
+          "tool": "issue_partial_refund",
+          "args": {
+            "customer_id": "NXS-72501",
+            "charge_id": "CHG-31209",
+            "amount": 2754.73,
+            "reason": "policy_30_90_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "issue_partial_refund",
+          "args": {
+            "customer_id": "NXS-72501",
+            "charge_id": "CHG-31209",
+            "amount": 2764.11,
+            "reason": "policy_30_90_day",
+            "notes": "Day 70 of Annual plan. Prorated refund: (295/365) x $3600 = $2,909.59, less 5% early termination fee = $2,764.11. Standard referral status, US billing region, credit card payment."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-6",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-19384",
+            "reason": "chargeback_dispute",
+            "charge_id": "CHG-62110"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-19384",
+            "reason": "chargeback_dispute",
+            "charge_id": "CHG-62110",
+            "priority": "high"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-7",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-55820",
+            "reason": "enterprise_negotiation"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "lookup_order",
+          "args": {
+            "customer_id": "NXS-55820",
+            "charge_id": "CHG-90012"
+          }
+        },
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-55820",
+            "action_type": "refund"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-8",
+      "score": 0.5,
+      "expected": [
+        {
+          "tool": "no_action",
+          "args": {
+            "reason": "out_of_scope",
+            "notes": "Customer has already used the maximum 2 trial extensions per Section 7.2."
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "no_action",
+          "args": {
+            "reason": "out_of_scope",
+            "notes": "Customer NXS-91205 has already used 2 trial extensions (the lifetime maximum per policy Section 7.2). No further trial extensions can be granted regardless of circumstances."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-9",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "issue_partial_refund",
+          "args": {
+            "customer_id": "NXS-84320",
+            "charge_id": "CHG-72910",
+            "amount": 3135.0,
+            "reason": "policy_30_90_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-84320",
+            "reason": "partner_escalation",
+            "notes": "Customer (Murphy & Associates LLC) is requesting a full refund on Annual charge CHG-72910 ($3,650.00, dated 2026-02-04), citing the Partner Referral 45-day extended full-refund window. However, the partner onboarded date on file is 2026-02-10 \u2014 six days AFTER the charge date. Per Section 2.4, the partner referral extension only applies if partner status was recorded prior to the charge. As a result, the standard 30-day full-refund window has passed (day ~35), and only a partial refund would be automatically eligible. Customer states they were told they would have an extended refund window. This may involve a sales/partner promise that requires verification. Please review the partner onboarding timeline, any commitments made by the partner or sales rep, and determine appropriate resolution. Account is verified; no chargeback, fraud flag, or legal hold."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-10",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "issue_full_refund",
+          "args": {
+            "customer_id": "NXS-58301",
+            "charge_id": "CHG-90145",
+            "reason": "within_30_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "cancel_subscription",
+          "args": {
+            "customer_id": "NXS-58301",
+            "reason": "customer_request",
+            "subscription_id": "SUB-58301-A",
+            "effective_date": "immediate"
+          }
+        },
+        {
+          "tool": "issue_full_refund",
+          "args": {
+            "customer_id": "NXS-58301",
+            "charge_id": "CHG-90145",
+            "reason": "within_30_day",
+            "notes": "Partner Referral account (PTR-DataCorp, onboarded 2025-11-01). Charge date 2026-01-28, refund requested 2026-03-11 = 42 days. Within the 45-day extended full-refund window per Section 2.4. Annual plan; onboarding credits/bonus features forfeited per Section 2.2."
+          }
+        },
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-58301",
+            "reason": "invoice_discrepancy",
+            "charge_id": "CHG-90146",
+            "priority": "normal"
+          }
+        }
+      ]
+    }
+  ],
+  "eval_time_seconds": 14.459258079528809,
+  "total_cases": 10,
+  "perfect_cases": 4,
+  "partial_cases": 2,
+  "zero_cases": 4
+}

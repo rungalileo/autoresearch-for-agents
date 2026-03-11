@@ -1,0 +1,67 @@
+{
+  "id": "TC-3",
+  "category": "attention_dilution",
+  "difficulty_level": 5,
+  "bottlenecks": [
+    "attention_dilution",
+    "temporal_ambiguity"
+  ],
+  "ordered": false,
+  "user_message": "Hey there, I've been having a few issues lately. Our team has been having trouble with the API rate limits and the dashboard has been slow. Also my CFO is asking about the charge from last month \u2014 we're thinking about getting a refund on our annual subscription. Can you help with that? Oh and also can you resend our last invoice? Thanks!",
+  "account_context": {
+    "customer_id": "NXS-61938",
+    "plan_type": "Annual",
+    "billing_region": "United States",
+    "payment_method": "ach_transfer",
+    "charge_date": "2026-01-28",
+    "charge_amount": 4800.0,
+    "charge_id": "CHG-44850",
+    "subscription_id": "SUB-61938-A",
+    "verification_status": "verified_business",
+    "sso_integration": "active",
+    "sso_activation_date": "2026-02-01",
+    "referral_status": "partner_referral",
+    "partner_id": "PTR-NexTech",
+    "partner_onboarded_date": "2025-12-10",
+    "fraud_flag": false,
+    "legal_hold": false,
+    "active_chargeback": false,
+    "account_created": "2025-12-15",
+    "billing_contact": "Jamie Okafor",
+    "company_name": "Okafor Analytics LLC",
+    "subscription_count": 3,
+    "bundle_discount": true,
+    "bundle_discount_percent": 15,
+    "previous_trial": true,
+    "trial_end_date": "2025-12-29",
+    "msa_on_file": false,
+    "onboarding_credits_granted": true,
+    "onboarding_credit_amount": 200.0,
+    "api_usage_tier": "high",
+    "last_login": "2026-03-11",
+    "support_tickets_open": 4,
+    "dashboard_performance_incidents": 2,
+    "region_timezone": "America/New_York"
+  },
+  "expected_tool_calls": [
+    {
+      "tool": "issue_full_refund",
+      "args": {
+        "customer_id": "NXS-61938",
+        "charge_id": "CHG-44850",
+        "reason": "within_30_day"
+      }
+    }
+  ],
+  "reasoning_chain": [
+    "Step 1: Multiple issues. Refund is the actionable financial request.",
+    "Step 2: Charge date 2026-01-28, today 2026-03-11 = 42 days. Standard: day 42 > 30 \u2192 partial refund.",
+    "Step 3: BUT referral_status = partner_referral \u2192 extended full-refund window of 45 days (Section 2.4).",
+    "Step 4: Day 42 < 45 \u2192 within extended full-refund window.",
+    "PREMATURE STOP at Step 2 \u2192 issue_partial_refund (wrong: partner referral extends window)."
+  ],
+  "wrong_but_tempting": {
+    "tool": "issue_partial_refund",
+    "why_tempting": "Day 42 is clearly past 30 days. Partner referral is buried among 20+ fields."
+  }
+}

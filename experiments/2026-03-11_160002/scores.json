@@ -1,0 +1,295 @@
+{
+  "overall_score": 0.5,
+  "category_scores": {
+    "absence_detection": 0.25,
+    "attention_dilution": 0.0,
+    "compound": 0.0,
+    "deep_chain": 1.0,
+    "strong_signal_inhibition": 1.0,
+    "temporal_ambiguity": 0.75
+  },
+  "per_case": [
+    {
+      "id": "TC-1",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-73291",
+            "reason": "wire_transfer_issue",
+            "charge_id": "CHG-39102"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "cancel_subscription",
+          "args": {
+            "customer_id": "NXS-73291",
+            "reason": "customer_request",
+            "subscription_id": "SUB-73291-A",
+            "effective_date": "immediate"
+          }
+        },
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-73291",
+            "charge_id": "CHG-39102",
+            "reason": "wire_transfer_issue",
+            "priority": "high"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-2",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-71493",
+            "reason": "partner_escalation"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "issue_full_refund",
+          "args": {
+            "customer_id": "NXS-71493",
+            "charge_id": "CHG-88301",
+            "reason": "within_30_day",
+            "notes": "Customer signed up 2026-02-25 and requested refund within 30-day window. Customer also claims sales rep Sarah promised a 90-day money-back guarantee \u2014 that claim has been escalated to Account Management separately for verification."
+          }
+        },
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-71493",
+            "reason": "partner_escalation",
+            "notes": "Customer (David Park, Park Industries LLC) states that sales rep \"Sarah\" promised a 90-day money-back guarantee as part of a special promotion at the time of signup (2026-02-25). A full refund of $2,400 (CHG-88301) has already been processed under the standard 30-day window. Account Management should verify the sales rep's promise and document accordingly, and assess whether any further action is needed if the customer re-subscribes and later claims the 90-day window."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-3",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "issue_full_refund",
+          "args": {
+            "customer_id": "NXS-61938",
+            "charge_id": "CHG-44850",
+            "reason": "within_30_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-61938",
+            "action_type": "refund"
+          }
+        },
+        {
+          "tool": "lookup_order",
+          "args": {
+            "customer_id": "NXS-61938",
+            "charge_id": "CHG-44850"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-4",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-44190",
+            "reason": "unverified_account_action"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "no_action",
+          "args": {
+            "message": "I can help with that cancellation. Before I proceed, I need to verify your identity since cancellations require verification.\n\nCould you please confirm **two** of the following:\n\n1. The registered email address on the account\n2. The last four digits of the payment method on file\n3. The company name on the account"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-5",
+      "score": 0.75,
+      "expected": [
+        {
+          "tool": "issue_partial_refund",
+          "args": {
+            "customer_id": "NXS-72501",
+            "charge_id": "CHG-31209",
+            "amount": 2754.73,
+            "reason": "policy_30_90_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "issue_partial_refund",
+          "args": {
+            "customer_id": "NXS-72501",
+            "charge_id": "CHG-31209",
+            "amount": 2764.11,
+            "reason": "policy_30_90_day",
+            "notes": "Customer on Annual plan requesting refund at day 70 of 365. Prorated unused days: 295/365 \u00d7 $3,600 = $2,909.59, minus 5% early termination fee ($145.48) = $2,764.11."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-6",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-19384",
+            "reason": "chargeback_dispute",
+            "charge_id": "CHG-62110"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-19384",
+            "reason": "chargeback_dispute",
+            "charge_id": "CHG-62110",
+            "priority": "high"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-7",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-55820",
+            "reason": "enterprise_negotiation"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "lookup_order",
+          "args": {
+            "customer_id": "NXS-55820",
+            "charge_id": "CHG-90012"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-8",
+      "score": 0.5,
+      "expected": [
+        {
+          "tool": "no_action",
+          "args": {
+            "reason": "out_of_scope",
+            "notes": "Customer has already used the maximum 2 trial extensions per Section 7.2."
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "no_action",
+          "args": {
+            "reason": "out_of_scope",
+            "notes": "Customer NXS-91205 has already used 2 trial extensions (the lifetime maximum per policy Section 7.2). No further trial extensions can be granted. Request cannot be fulfilled via automated support."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-9",
+      "score": 0.75,
+      "expected": [
+        {
+          "tool": "issue_partial_refund",
+          "args": {
+            "customer_id": "NXS-84320",
+            "charge_id": "CHG-72910",
+            "amount": 3135.0,
+            "reason": "policy_30_90_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "issue_partial_refund",
+          "args": {
+            "customer_id": "NXS-84320",
+            "charge_id": "CHG-72910",
+            "amount": 3145.8,
+            "reason": "policy_30_90_day",
+            "notes": "Customer requested full refund citing partner referral extended window. Partner onboarded date (2026-02-10) is after charge date (2026-02-04), so partner referral extension (Section 2.4) does not apply. Charge is 34 days old, falling in the 31\u201390 day partial refund window. Prorated calculation: (331/365) \u00d7 $3,650 = $3,311.37, minus 5% early termination fee = $3,145.80."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-10",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "issue_full_refund",
+          "args": {
+            "customer_id": "NXS-58301",
+            "charge_id": "CHG-90145",
+            "reason": "within_30_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-58301",
+            "action_type": "cancellation"
+          }
+        },
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-58301",
+            "action_type": "refund"
+          }
+        },
+        {
+          "tool": "lookup_order",
+          "args": {
+            "customer_id": "NXS-58301",
+            "charge_id": "CHG-90146"
+          }
+        }
+      ]
+    }
+  ],
+  "eval_time_seconds": 12.233973979949951,
+  "total_cases": 10,
+  "perfect_cases": 3,
+  "partial_cases": 3,
+  "zero_cases": 4
+}

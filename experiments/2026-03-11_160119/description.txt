@@ -1,0 +1,1 @@
+tool-calls-always, don't-ask-to-verify, out-of-scope

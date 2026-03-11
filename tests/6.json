@@ -1,0 +1,57 @@
+{
+  "id": "TC-6",
+  "category": "strong_signal_inhibition",
+  "difficulty_level": 7,
+  "bottlenecks": [
+    "strong_signal_inhibition"
+  ],
+  "ordered": false,
+  "user_message": "I want a full refund for my subscription. I signed up 3 weeks ago and the product is not what was advertised. I want my money back now.",
+  "account_context": {
+    "customer_id": "NXS-19384",
+    "plan_type": "Monthly",
+    "billing_region": "United States",
+    "payment_method": "credit_card",
+    "charge_date": "2026-02-18",
+    "charge_amount": 149.0,
+    "charge_id": "CHG-62110",
+    "subscription_id": "SUB-19384-A",
+    "verification_status": "verified_business",
+    "sso_integration": "active",
+    "referral_status": "standard",
+    "fraud_flag": false,
+    "legal_hold": false,
+    "active_chargeback": true,
+    "account_created": "2026-02-18",
+    "billing_contact": "Rachel Kim",
+    "company_name": "Kim Creative Studio",
+    "subscription_count": 1,
+    "seats": 5,
+    "usage_last_30d": {
+      "api_calls": 450,
+      "active_users": 3
+    },
+    "support_tickets_open": 1,
+    "last_login": "2026-03-10"
+  },
+  "expected_tool_calls": [
+    {
+      "tool": "escalate_to_billing",
+      "args": {
+        "customer_id": "NXS-19384",
+        "reason": "chargeback_dispute",
+        "charge_id": "CHG-62110"
+      }
+    }
+  ],
+  "reasoning_chain": [
+    "Step 1: Within 30-day window. Verified. No fraud. No legal hold. Everything qualifies for full refund.",
+    "Step 2: EXCEPT active_chargeback is true \u2192 Section 6.1: NO refunds during active chargeback.",
+    "Step 3: Must escalate to Billing with chargeback_dispute reason.",
+    "MISS: All signals point to full refund. Chargeback is one field among many."
+  ],
+  "wrong_but_tempting": {
+    "tool": "issue_full_refund",
+    "why_tempting": "Perfect refund candidate except for the chargeback flag."
+  }
+}

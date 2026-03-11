@@ -1,0 +1,64 @@
+{
+  "id": "TC-1",
+  "category": "deep_chain",
+  "difficulty_level": 7,
+  "bottlenecks": [
+    "deep_chain",
+    "cross_domain_interaction"
+  ],
+  "ordered": false,
+  "user_message": "Ol\u00e1, I purchased your Annual plan 5 days ago and I want to cancel. I set up SSO for my team already but the product isn't what we need. I'd like a full refund under the cooling period please.",
+  "account_context": {
+    "customer_id": "NXS-73291",
+    "plan_type": "Annual",
+    "billing_region": "Brazil",
+    "payment_method": "wire_transfer",
+    "charge_date": "2026-03-06",
+    "charge_amount": 2800.0,
+    "charge_id": "CHG-39102",
+    "subscription_id": "SUB-73291-A",
+    "verification_status": "verified_business",
+    "sso_integration": "active",
+    "sso_activation_date": "2026-03-07",
+    "referral_status": "standard",
+    "fraud_flag": false,
+    "legal_hold": false,
+    "active_chargeback": false,
+    "account_created": "2026-03-06",
+    "billing_contact": "Carlos Mendes",
+    "company_name": "Mendes Tecnologia Ltda",
+    "subscription_count": 1,
+    "seats": 12,
+    "usage_last_30d": {
+      "api_calls": 180,
+      "active_users": 3
+    },
+    "support_tickets_open": 0,
+    "last_login": "2026-03-11"
+  },
+  "expected_tool_calls": [
+    {
+      "tool": "escalate_to_billing",
+      "args": {
+        "customer_id": "NXS-73291",
+        "reason": "wire_transfer_issue",
+        "charge_id": "CHG-39102"
+      }
+    }
+  ],
+  "reasoning_chain": [
+    "Step 1: Brazil \u2192 7-day cooling period (Section 5.2). Charge 2026-03-06, today 2026-03-11 = 5 days \u2192 within window.",
+    "Step 2: SSO is active \u2192 but Section 5.2: SSO waiver does NOT apply to Brazilian cooling periods.",
+    "Step 3: Cooling period intact \u2192 customer entitled to full refund.",
+    "Step 4: Payment method is wire_transfer \u2192 wire refunds cannot be auto-processed (Section 2.3).",
+    "Step 5: This is NOT an EU cooling period wire transfer \u2192 NOT escalate_to_compliance. Brazil is not EU/EEA/UK.",
+    "Step 6: Wire transfer refund \u2192 route to Finance \u2192 escalate_to_billing with wire_transfer_issue.",
+    "TRAP 1: Model sees SSO active and thinks cooling period waived \u2192 issue_full_refund.",
+    "TRAP 2: Model sees cooling period + wire transfer and assumes escalate_to_compliance (but that's EU-only).",
+    "TRAP 3: Model ignores wire transfer and tries issue_full_refund directly."
+  ],
+  "wrong_but_tempting": {
+    "tool": "escalate_to_compliance",
+    "why_tempting": "Cooling period + wire transfer pattern matches EU cases. But Brazil is NOT EU, so the eu_cooling_period_wire_transfer reason doesn't apply."
+  }
+}

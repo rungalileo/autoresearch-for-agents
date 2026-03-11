@@ -1,0 +1,9 @@
+What changed: Radically reframed the agent identity from 'support agent' to 'routing engine'. Key changes: (1) 'You are a routing engine. Output tool calls only — no text.' (2) 'Lookup, eligibility, and order-search tools are disabled' — framed as system constraint, not instruction. (3) 'Multi-topic messages: resolve the highest-priority financial action' — explicit focus directive for TC-3/TC-10. (4) Step 7 refund formula made more explicit: floor((remaining/period) × amount × 0.95). (5) Title changed to 'Nexus Tool Router'.
+
+Why: Exp 011 (best, 0.55) fails on TC-3,4,5,10. Root causes: (a) TC-3,10: multi-request messages cause model to call lookup/eligibility tools as 'preparation'. (b) TC-4,5: model generates text asking for confirmation/verification instead of calling tools. The fundamental issue is the model treating this as a conversation rather than a routing task.
+
+Thesis: Reframing as a 'routing engine' that 'only outputs tool calls' should eliminate conversational behavior (TC-4,5). Saying lookup tools are 'disabled' (system constraint) is stronger than 'never use' (instruction). Multi-topic focus directive should fix TC-3,10 by preventing the model from trying to address all sub-requests. Expecting 0.70+.
+
+Learnings: Experiments 006-012 showed that instruction-level prohibitions ('never call lookup tools') work for simple cases but fail for complex multi-request messages. The model's default conversational mode overrides instructions. Identity-level reframing ('you are a router, not a chatbot') is a known technique for shifting model behavior more fundamentally. Previous exp 012 tried 'tool-calling agent' identity but kept conversational framing — this goes further by removing all conversational elements.
+
+If fails: Try separating the concern: have the first line be 'Think step by step about which rule applies, then output ONLY the matching tool call.' This gives the model space to reason without generating conversational text.

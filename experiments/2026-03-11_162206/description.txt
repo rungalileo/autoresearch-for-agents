@@ -1,0 +1,1 @@
+contrastive self-check before tool call, act-immediately, multi-topic focus

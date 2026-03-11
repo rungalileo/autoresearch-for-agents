@@ -1,0 +1,299 @@
+{
+  "overall_score": 0.525,
+  "category_scores": {
+    "absence_detection": 0.25,
+    "attention_dilution": 0.0,
+    "compound": 1.0,
+    "deep_chain": 0.0,
+    "strong_signal_inhibition": 1.0,
+    "temporal_ambiguity": 0.375
+  },
+  "per_case": [
+    {
+      "id": "TC-1",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-73291",
+            "reason": "wire_transfer_issue",
+            "charge_id": "CHG-39102"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "cancel_subscription",
+          "args": {
+            "customer_id": "NXS-73291",
+            "reason": "customer_request",
+            "effective_date": "immediate",
+            "subscription_id": "SUB-73291-A"
+          }
+        },
+        {
+          "tool": "escalate_to_compliance",
+          "args": {
+            "customer_id": "NXS-73291",
+            "reason": "eu_cooling_period_wire_transfer",
+            "charge_id": "CHG-39102",
+            "region": "Brazil"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-2",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-71493",
+            "reason": "partner_escalation"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "issue_full_refund",
+          "args": {
+            "customer_id": "NXS-71493",
+            "charge_id": "CHG-88301",
+            "reason": "within_30_day",
+            "notes": "Customer requested refund ~14 days after charge date of 2026-02-25. Eligible under standard 30-day full refund window. Customer also referenced a sales rep promise (Sarah) of a 90-day guarantee \u2014 escalated to Account Management for verification."
+          }
+        },
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-71493",
+            "reason": "partner_escalation",
+            "notes": "Customer David Park (Park Industries LLC) claims sales rep \"Sarah\" promised a 90-day money-back guarantee as part of a special promotion at the time of signup (2026-02-25). A full refund has already been processed under the standard 30-day window (CHG-88301, $2,400.00). Account Management should verify the sales rep's promise and document accordingly. No additional refund action is pending, but the claim should be on record."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-3",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "issue_full_refund",
+          "args": {
+            "customer_id": "NXS-61938",
+            "charge_id": "CHG-44850",
+            "reason": "within_30_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "no_action",
+          "args": {
+            "message": "I'd be happy to help with all of these! Let me work through each item:\n\n---\n\n### 1. \ud83d\udcc4 Invoice Resend\nGood news \u2014 invoice/receipt resend requests don't require verification, so I can note that request. However, I don't have a direct \"resend invoice\" tool available in my current toolkit. I'd recommend reaching out via your account dashboard under **Billing > Invoice History**, or I can flag this for the billing team. Let me know if you'd like me to escalate that.\n\n---\n\n### 2. \ud83d\udd01 Refund Request \u2014 Let me assess this\n\nHere's what I see on your account:\n\n- **Charge date:** January 28, 2026\n- **Today's date:** March 11, 2026\n- **Days since charge:** **42 days**\n- **Plan:** Annual | **Payment:** ACH Transfer\n- **Referral status:** Partner Referral \u2705 (onboarded December 10, 2025 \u2014 *before* the January 28 charge)\n\n**Partner Referral accounts get an extended full-refund window of 45 days** (instead of the standard 30). Since you're at day 42, you're **still within the 45-day full-refund window!** \ud83c\udf89\n\nHowever, I need to flag two things before processing:\n\n> \u26a0\ufe0f **Bundle Discount Notice:** Your account has a **15% bundle discount** across 3 subscriptions. If this subscription is cancelled, the remaining subscriptions will be **repriced to standard (non-bundled) rates** at the next billing cycle. Please confirm you're aware of this impact before I proceed.\n\n> \u26a0\ufe0f **Onboarding Credits:** A full refund on an Annual plan requires **forfeiture of onboarding credits** ($200 in credits granted at annual commitment).\n\nAlso, since this refund exceeds $500, **identity verification is required** \u2014 but your account is already marked as **Verified Business**, so we're good there. \u2705\n\n**Please confirm** you'd like to proceed with the full refund understanding the bundle repricing and onboarding credit forfeiture, and I'll process it right away.\n\n---\n\n### 3. \ud83d\udc22 API Rate Limits & Dashboard Performance\n\nI can see your account shows **2 dashboard performance incidents** on record and you're on the **high API usage tier**. These are technical issues I'd recommend raising through a dedicated support ticket if not already done (you currently have 4 open tickets). If the dashboard slowness was severe enough to constitute a service disruption, you may also be eligible for a **service credit** \u2014 just let me know and I can look into that separately.\n\n---\n\n**To summarize what I need from you:**\n1. \u2705 Confirm you understand the **bundle repricing impact** and **onboarding credit forfeiture** before I process the refund.\n2. Let me know if you'd like me to escalate the **invoice resend** to billing.\n3. Let me know if you'd like to pursue a **service credit** for the dashboard/API issues."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-4",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-44190",
+            "reason": "unverified_account_action"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "no_action",
+          "args": {
+            "message": "I can help you with that cancellation request. Before I process it, I need to verify your identity as required for cancellation requests.\n\nCould you please confirm **two of the following**:\n\n1. The **registered email address** on the account\n2. The **last four digits** of the payment method on file\n3. The **company name** on the account"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-5",
+      "score": 0.75,
+      "expected": [
+        {
+          "tool": "issue_partial_refund",
+          "args": {
+            "customer_id": "NXS-72501",
+            "charge_id": "CHG-31209",
+            "amount": 2754.73,
+            "reason": "policy_30_90_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "issue_partial_refund",
+          "args": {
+            "customer_id": "NXS-72501",
+            "charge_id": "CHG-31209",
+            "amount": 2764.1,
+            "reason": "policy_30_90_day",
+            "notes": "Annual plan partial refund at day 70. Prorated calculation: (295 remaining days / 365) x $3,600 = $2,909.58, minus 5% early termination fee ($145.48) = $2,764.10 net refund. Customer cancelling due to poor fit."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-6",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-19384",
+            "reason": "chargeback_dispute",
+            "charge_id": "CHG-62110"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-19384",
+            "reason": "chargeback_dispute",
+            "charge_id": "CHG-62110",
+            "priority": "high"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-7",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-55820",
+            "reason": "enterprise_negotiation"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-55820",
+            "reason": "enterprise_negotiation",
+            "notes": "Enterprise customer (Whitfield & Partners LLP, James Whitfield) is requesting a refund review on charge CHG-90012 ($62,000.00, dated 2026-02-01), approximately 35-38 days after charge date (31-90 day window). MSA is silent on refunds, so Annual schedule applies with 5% early termination fee unless waived. ACV exceeds $50,000 \u2014 courtesy exception and fee waiver may be applicable at account management's discretion. Payment is by wire transfer, so Finance routing will also be required. Additionally, the customer has reported: (1) Jira integration not syncing properly, and (2) a team member named Alex is unable to access the analytics dashboard. Please coordinate with technical support on these issues."
+          }
+        },
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-55820",
+            "reason": "wire_transfer_issue",
+            "charge_id": "CHG-90012",
+            "priority": "normal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-8",
+      "score": 0.5,
+      "expected": [
+        {
+          "tool": "no_action",
+          "args": {
+            "reason": "out_of_scope",
+            "notes": "Customer has already used the maximum 2 trial extensions per Section 7.2."
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "no_action",
+          "args": {
+            "reason": "out_of_scope",
+            "notes": "Customer requested a third trial extension. Account has already used 2 extensions (lifetime maximum per Section 7.2). No further extensions can be granted."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-9",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "issue_partial_refund",
+          "args": {
+            "customer_id": "NXS-84320",
+            "charge_id": "CHG-72910",
+            "amount": 3135.0,
+            "reason": "policy_30_90_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "no_action",
+          "args": {
+            "message": "I can see the details here, but there's an important issue with the Partner Referral status that affects eligibility. Let me walk through the analysis:\n\n## Account Review\n\n**Charge date:** February 4, 2026\n**Today's date:** ~March 10, 2026 (based on last login)\n**Days since charge:** ~34 days\n\n**Partner Referral Extended Window (45 days):** The customer is correct that Partner Referral accounts get a 45-day full-refund window instead of 30 days. However, per **Section 2.4**, Partner Referral status must have been **recorded prior to the charge in question**.\n\nIn this account:\n- **Charge date:** February 4, 2026\n- **Partner onboarded date:** February 10, 2026 \u26a0\ufe0f\n\nThe partner referral was recorded **6 days after** the charge was made. This means the extended 45-day window does **not apply** to this charge.\n\n**Standard refund window assessment:**\n- At ~34 days from charge, the customer is **outside the standard 30-day full refund window**\n- They fall in the **31\u201390 day partial refund window**\n- A 5% early termination fee applies (Annual plan, not downgrading to Monthly)\n\n**Prorated partial refund calculation:**\n- Remaining days \u2248 365 \u2212 34 = 331 days\n- Refund = (331 \u00f7 365) \u00d7 $3,650 = **$3,311.37**\n- Minus 5% early termination fee: $3,311.37 \u00d7 0.95 = **$3,145.80**\n\n---\n\nI'm not able to issue the full refund the customer is requesting, as the partner referral extension doesn't apply to this charge. I can offer the partial refund of **$3,145.80** under the standard 31\u201390 day Annual policy, or explain the situation to the customer. Would you like me to proceed with the partial refund, or is there anything else you'd like me to clarify first?"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-10",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "issue_full_refund",
+          "args": {
+            "customer_id": "NXS-58301",
+            "charge_id": "CHG-90145",
+            "reason": "within_30_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "cancel_subscription",
+          "args": {
+            "customer_id": "NXS-58301",
+            "reason": "customer_request",
+            "subscription_id": "SUB-58301-A",
+            "effective_date": "end_of_period"
+          }
+        },
+        {
+          "tool": "issue_full_refund",
+          "args": {
+            "customer_id": "NXS-58301",
+            "charge_id": "CHG-90145",
+            "reason": "within_30_day",
+            "notes": "Partner Referral account (PTR-DataCorp, onboarded 2025-11-01) \u2014 extended 45-day full-refund window applies. Charge date 2026-01-28, refund requested on day 42. Full refund of $4,800.00 issued per Section 2.4. Customer informed of bundle discount repricing impact on SUB-58301-B."
+          }
+        },
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-58301",
+            "charge_id": "CHG-90146",
+            "reason": "invoice_discrepancy",
+            "priority": "normal"
+          }
+        }
+      ]
+    }
+  ],
+  "eval_time_seconds": 17.49736499786377,
+  "total_cases": 10,
+  "perfect_cases": 4,
+  "partial_cases": 2,
+  "zero_cases": 4
+}

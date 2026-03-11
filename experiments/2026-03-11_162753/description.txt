@@ -1,0 +1,1 @@
+narrow rule 3 to named-rep, restore partner hint

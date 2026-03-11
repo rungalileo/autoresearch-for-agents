@@ -1,0 +1,66 @@
+{
+  "id": "TC-10",
+  "category": "compound",
+  "difficulty_level": 9,
+  "bottlenecks": ["deep_chain", "strong_signal_inhibition", "attention_dilution"],
+  "ordered": false,
+  "user_message": "Hi, I need help with a few things. First, we want to cancel one of our two subscriptions — the Analytics one. Also, I'd like a refund on that same subscription, we were charged about 6 weeks ago. And separately, our billing team noticed what looks like a duplicate charge on our other subscription last month. Can you look into all of this?",
+  "account_context": {
+    "customer_id": "NXS-58301",
+    "plan_type": "Annual",
+    "billing_region": "United States",
+    "payment_method": "credit_card",
+    "charge_date": "2026-01-28",
+    "charge_amount": 4800.00,
+    "charge_id": "CHG-90145",
+    "subscription_id": "SUB-58301-A",
+    "second_subscription_id": "SUB-58301-B",
+    "second_charge_date": "2026-02-15",
+    "second_charge_amount": 2400.00,
+    "second_charge_id": "CHG-90146",
+    "verification_status": "verified_business",
+    "sso_integration": "active",
+    "referral_status": "partner_referral",
+    "partner_id": "PTR-DataCorp",
+    "partner_onboarded_date": "2025-11-01",
+    "fraud_flag": false,
+    "legal_hold": false,
+    "active_chargeback": false,
+    "account_created": "2025-11-15",
+    "billing_contact": "Sarah Chen",
+    "company_name": "Chen Analytics Group",
+    "subscription_count": 2,
+    "bundle_discount": true,
+    "bundle_discount_percent": 15,
+    "seats": 25,
+    "usage_last_30d": {"api_calls": 45000, "active_users": 18},
+    "support_tickets_open": 1,
+    "last_login": "2026-03-11",
+    "msa_on_file": false
+  },
+  "expected_tool_calls": [
+    {
+      "tool": "issue_full_refund",
+      "args": {
+        "customer_id": "NXS-58301",
+        "charge_id": "CHG-90145",
+        "reason": "within_30_day"
+      }
+    }
+  ],
+  "reasoning_chain": [
+    "Step 1: Three requests: (a) cancel sub A, (b) refund on sub A (charged 6 weeks ago), (c) duplicate charge on sub B.",
+    "Step 2: No blockers (fraud/legal/chargeback all false).",
+    "Step 3: Refund on sub A: charge 2026-01-28, today 2026-03-11 = 42 days.",
+    "Step 4: Standard: 42 > 30 → partial refund. BUT partner_referral + partner_onboarded 2025-11-01 (before charge) → 45-day extended window.",
+    "Step 5: 42 < 45 → within extended full-refund window → issue_full_refund.",
+    "Step 6: Duplicate charge claim on sub B → escalate_to_billing? BUT customer just says it 'looks like' a duplicate. No specific charge disputed. This is informational/needs clarification, not a definitive billing dispute to escalate.",
+    "Step 7: Cancellation of sub A → bundle discount repricing warning needed (Sec 8.2). But refund takes priority per billing-before-account-management (Sec 4.2).",
+    "Step 8: The actionable financial request with highest priority is the refund on sub A.",
+    "MISS: Three simultaneous requests cause attention dilution. Duplicate charge mention pulls toward escalate_to_billing. Day 42 pulls toward partial refund. Partner referral extension buried in noise."
+  ],
+  "wrong_but_tempting": {
+    "tool": "issue_partial_refund",
+    "why_tempting": "42 days > 30 → partial refund seems obvious. Partner referral is one field among 25+. Duplicate charge mention on another sub pulls attention to escalate_to_billing."
+  }
+}

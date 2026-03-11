@@ -1,0 +1,56 @@
+{
+  "id": "TC-4",
+  "category": "absence_detection",
+  "difficulty_level": 5,
+  "bottlenecks": [
+    "absence_detection"
+  ],
+  "ordered": false,
+  "user_message": "Hi, I need to cancel our subscription effective immediately. We've decided to move to a different platform. Can you process that for me?",
+  "account_context": {
+    "customer_id": "NXS-44190",
+    "plan_type": "Monthly",
+    "billing_region": "United States",
+    "payment_method": "credit_card",
+    "charge_date": "2026-03-01",
+    "charge_amount": 199.0,
+    "charge_id": "CHG-88341",
+    "subscription_id": "SUB-44190-A",
+    "sso_integration": "inactive",
+    "referral_status": "standard",
+    "fraud_flag": false,
+    "legal_hold": false,
+    "active_chargeback": false,
+    "account_created": "2025-09-15",
+    "billing_contact": "Dana Chen",
+    "company_name": "Brightpath Solutions Inc",
+    "subscription_count": 1,
+    "seats": 12,
+    "usage_last_30d": {
+      "api_calls": 8400,
+      "active_users": 10
+    },
+    "support_tickets_open": 0,
+    "last_login": "2026-03-10"
+  },
+  "expected_tool_calls": [
+    {
+      "tool": "escalate_to_account_manager",
+      "args": {
+        "customer_id": "NXS-44190",
+        "reason": "unverified_account_action"
+      }
+    }
+  ],
+  "reasoning_chain": [
+    "Step 1: Cancellation requires identity verification (Section 1.2).",
+    "Step 2: verification_status field is ABSENT from account context.",
+    "Step 3: Absence = unverified. SSO is inactive \u2192 no auto-verification.",
+    "Step 4: Unverified account cancellation \u2192 escalate (Section 3.2).",
+    "MISS: Many fields present, model assumes verified."
+  ],
+  "wrong_but_tempting": {
+    "tool": "cancel_subscription",
+    "why_tempting": "Simple request, no blockers. Many fields present make account feel complete. ABSENCE of verification_status is easy to miss."
+  }
+}

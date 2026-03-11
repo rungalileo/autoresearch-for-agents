@@ -1,0 +1,25 @@
+[PERFECT] TC-1: expected=['escalate_to_billing'], actual=['escalate_to_billing', 'cancel_subscription'], score=1.000
+[PERFECT] TC-2: expected=['escalate_to_account_manager'], actual=['escalate_to_account_manager'], score=1.000
+[ZERO] TC-3: expected=['issue_full_refund'], actual=['send_template_response'], score=0.000
+[ZERO] TC-4: expected=['escalate_to_account_manager'], actual=['verify_identity'], score=0.000
+[ZERO] TC-5: expected=['issue_partial_refund'], actual=['cancel_subscription'], score=0.000
+[PERFECT] TC-6: expected=['escalate_to_billing'], actual=['escalate_to_billing'], score=1.000
+[PERFECT] TC-7: expected=['escalate_to_account_manager'], actual=['escalate_to_account_manager'], score=1.000
+[PARTIAL] TC-8: expected=['no_action'], actual=['no_action'], score=0.500
+[PARTIAL] TC-9: expected=['issue_partial_refund'], actual=['issue_partial_refund'], score=0.750
+[PERFECT] TC-10: expected=['issue_full_refund'], actual=['cancel_subscription', 'issue_full_refund', 'escalate_to_billing'], score=1.000
+Experiment saved to /Users/pratik/Documents/github/autoresearch-for-agents/experiments/2026-03-11_170313
+---
+overall_score:                0.625000
+category_absence_detection: 0.250000
+category_attention_dilution: 0.000000
+category_compound:        1.000000
+category_deep_chain:      1.000000
+category_strong_signal_inhibition: 1.000000
+category_temporal_ambiguity: 0.375000
+total_cases:                  10
+perfect_cases:                5
+partial_cases:                2
+zero_cases:                   3
+eval_time_seconds:            20.9
+---

@@ -1,0 +1,54 @@
+{
+  "id": "TC-2",
+  "category": "strong_signal_inhibition",
+  "difficulty_level": 8,
+  "bottlenecks": ["strong_signal_inhibition", "deep_chain"],
+  "ordered": false,
+  "user_message": "Hi, I'd like a refund on my subscription. I signed up about two weeks ago and it's not working out. Also, when I signed up, your sales rep Sarah told me I'd get a 90-day money-back guarantee — she said it was part of a special promotion. Can you process the refund?",
+  "account_context": {
+    "customer_id": "NXS-71493",
+    "plan_type": "Annual",
+    "billing_region": "United States",
+    "payment_method": "credit_card",
+    "charge_date": "2026-02-25",
+    "charge_amount": 2400.00,
+    "charge_id": "CHG-88301",
+    "subscription_id": "SUB-71493-A",
+    "verification_status": "verified_business",
+    "sso_integration": "active",
+    "referral_status": "standard",
+    "fraud_flag": false,
+    "legal_hold": false,
+    "active_chargeback": false,
+    "account_created": "2026-02-25",
+    "billing_contact": "David Park",
+    "company_name": "Park Industries LLC",
+    "subscription_count": 1,
+    "seats": 10,
+    "usage_last_30d": {"api_calls": 3500, "active_users": 6},
+    "support_tickets_open": 0,
+    "last_login": "2026-03-11"
+  },
+  "expected_tool_calls": [
+    {
+      "tool": "escalate_to_account_manager",
+      "args": {
+        "customer_id": "NXS-71493",
+        "reason": "partner_escalation"
+      }
+    }
+  ],
+  "reasoning_chain": [
+    "Step 1: No blockers (fraud/legal/chargeback all false).",
+    "Step 2: Charge 2026-02-25, today 2026-03-11 = 14 days → within 30-day window → full refund eligible.",
+    "Step 3: Verified, SSO active, no issues → model wants to issue_full_refund.",
+    "Step 4: BUT customer references a promise from sales rep Sarah about a 90-day guarantee.",
+    "Step 5: Section 10.2: 'If a customer references a promise from a sales representative, the agent should note the claim and escalate to Account Management for verification without confirming or denying validity.'",
+    "Step 6: Sales promise claim → MUST escalate to account_manager, cannot process refund directly.",
+    "MISS: Refund is clearly valid under standard policy (14 days < 30). Very tempting to just process it. The sales promise seems like extra context rather than a routing trigger."
+  ],
+  "wrong_but_tempting": {
+    "tool": "issue_full_refund",
+    "why_tempting": "14 days is well within the 30-day full refund window. Everything qualifies. The sales promise mention seems like background info, not a reason to change the routing."
+  }
+}

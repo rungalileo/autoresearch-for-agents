@@ -1,0 +1,312 @@
+{
+  "overall_score": 0.25,
+  "category_scores": {
+    "absence_detection": 0.25,
+    "attention_dilution": 0.0,
+    "compound": 0.0,
+    "deep_chain": 0.0,
+    "strong_signal_inhibition": 1.0,
+    "temporal_ambiguity": 0.0
+  },
+  "per_case": [
+    {
+      "id": "TC-1",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-73291",
+            "reason": "wire_transfer_issue",
+            "charge_id": "CHG-39102"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-73291",
+            "action_type": "refund"
+          }
+        },
+        {
+          "tool": "lookup_order",
+          "args": {
+            "customer_id": "NXS-73291",
+            "charge_id": "CHG-39102"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-2",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-71493",
+            "reason": "partner_escalation"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-71493",
+            "action_type": "refund"
+          }
+        },
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-71493",
+            "reason": "partner_escalation",
+            "notes": "Customer David Park (Park Industries LLC) is requesting a refund and claims sales rep \"Sarah\" promised a 90-day money-back guarantee as part of a special promotion at signup (2026-02-25). This claim cannot be confirmed or denied by support. Please verify with the sales team whether such a promise was made and document accordingly. Note: customer is independently eligible for a full refund under the standard 30-day window (charge CHG-88301, $2,400.00), which is being processed separately."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-3",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "issue_full_refund",
+          "args": {
+            "customer_id": "NXS-61938",
+            "charge_id": "CHG-44850",
+            "reason": "within_30_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "lookup_order",
+          "args": {
+            "customer_id": "NXS-61938",
+            "charge_id": "CHG-44850"
+          }
+        },
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-61938",
+            "action_type": "refund"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-4",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-44190",
+            "reason": "unverified_account_action"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "verify_identity",
+          "args": {
+            "customer_id": "NXS-44190",
+            "method": "email_verification"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-5",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "issue_partial_refund",
+          "args": {
+            "customer_id": "NXS-72501",
+            "charge_id": "CHG-31209",
+            "amount": 2754.73,
+            "reason": "policy_30_90_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-72501",
+            "action_type": "refund"
+          }
+        },
+        {
+          "tool": "lookup_order",
+          "args": {
+            "customer_id": "NXS-72501",
+            "charge_id": "CHG-31209"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-6",
+      "score": 1.0,
+      "expected": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-19384",
+            "reason": "chargeback_dispute",
+            "charge_id": "CHG-62110"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "escalate_to_billing",
+          "args": {
+            "customer_id": "NXS-19384",
+            "reason": "chargeback_dispute",
+            "charge_id": "CHG-62110",
+            "priority": "high"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-7",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "escalate_to_account_manager",
+          "args": {
+            "customer_id": "NXS-55820",
+            "reason": "enterprise_negotiation"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "lookup_order",
+          "args": {
+            "customer_id": "NXS-55820",
+            "charge_id": "CHG-90012"
+          }
+        },
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-55820",
+            "action_type": "refund"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-8",
+      "score": 0.5,
+      "expected": [
+        {
+          "tool": "no_action",
+          "args": {
+            "reason": "out_of_scope",
+            "notes": "Customer has already used the maximum 2 trial extensions per Section 7.2."
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "no_action",
+          "args": {
+            "reason": "out_of_scope",
+            "notes": "Customer NXS-91205 requested a third trial extension. Policy (Section 7.2) allows a maximum of 2 lifetime trial extensions. This account has already used both extensions. No further extension can be granted."
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-9",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "issue_partial_refund",
+          "args": {
+            "customer_id": "NXS-84320",
+            "charge_id": "CHG-72910",
+            "amount": 3135.0,
+            "reason": "policy_30_90_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-84320",
+            "action_type": "refund"
+          }
+        },
+        {
+          "tool": "lookup_order",
+          "args": {
+            "customer_id": "NXS-84320",
+            "charge_id": "CHG-72910"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TC-10",
+      "score": 0.0,
+      "expected": [
+        {
+          "tool": "issue_full_refund",
+          "args": {
+            "customer_id": "NXS-58301",
+            "charge_id": "CHG-90145",
+            "reason": "within_30_day"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "lookup_order",
+          "args": {
+            "customer_id": "NXS-58301",
+            "charge_id": "CHG-90145"
+          }
+        },
+        {
+          "tool": "lookup_order",
+          "args": {
+            "customer_id": "NXS-58301",
+            "charge_id": "CHG-90146"
+          }
+        },
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-58301",
+            "action_type": "cancellation"
+          }
+        },
+        {
+          "tool": "check_eligibility",
+          "args": {
+            "customer_id": "NXS-58301",
+            "action_type": "refund"
+          }
+        }
+      ]
+    }
+  ],
+  "eval_time_seconds": 11.294901132583618,
+  "total_cases": 10,
+  "perfect_cases": 2,
+  "partial_cases": 1,
+  "zero_cases": 7
+}

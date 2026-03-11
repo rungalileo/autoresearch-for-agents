@@ -1,0 +1,5 @@
+.DS_Store
+.env
+agent/system_prompt.md
+__pycache__/
+*.pyc

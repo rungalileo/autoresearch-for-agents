@@ -1,0 +1,9 @@
+What changed: Rule 3 narrowed from 'Customer cites sales rep promise' to 'Customer names a sales rep or claims terms beyond standard policy.' This targets TC-9 which was incorrectly caught by the old rule 3 because the customer said 'were told we'd have an extended refund window' — but this refers to the standard partner referral benefit, not a sales rep promise. TC-2 explicitly names 'your sales rep Sarah' and claims a '90-day money-back guarantee' (not in standard policy), so it should still match rule 3.
+
+Why: Exp 016 (best, 0.625) lost TC-9 (was 0.75 in exp 015, now 0.0). TC-9 customer references the partner program's extended window — a real policy feature. The model treated this as a sales promise and escalated. The expected action is issue_partial_refund because the partner was onboarded after the charge (so standard 30d window applies, day 35 = partial).
+
+Thesis: 'Names a sales rep or claims terms beyond standard policy' should NOT match TC-9 (customer references a standard partner benefit, doesn't name a rep) but SHOULD match TC-2 (names 'Sarah', claims 90-day guarantee). If TC-9 falls through to rule 7, the model should compute: partner onboarded after charge → standard window → 35d → partial refund. Expecting TC-9 back to 0.75, overall 0.70+.
+
+Learnings: Exp 016 showed rule 3 was too broad — catching legitimate policy references as 'sales promises.' The key insight is that Section 10.2 applies when a customer references a PERSONAL promise from a specific representative, not when they reference a published program benefit. Narrowing the trigger preserves TC-2 while unblocking TC-9.
+
+If fails: The model might interpret 'were told' as 'claims terms beyond standard policy' since the extended window doesn't actually apply (partner was onboarded after charge). If so, try 'Customer explicitly names a sales/account rep who made a promise.'
