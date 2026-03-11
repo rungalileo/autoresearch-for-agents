@@ -8,7 +8,11 @@ Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch).
 
 ## The Idea
 
-Prompt engineering is usually vibes: tweak wording, eyeball outputs, repeat. We wanted to make it rigorous. That means a frozen test suite the optimizer can't touch, a deterministic scorer with no LLM judge, a <1000 character budget to prevent overfitting, and constraints against reward hacking (no test-case-specific instructions allowed). The optimizer agent forms hypotheses, edits one file (`system_prompt.md`), evaluates against hard adversarial cases, keeps improvements, reverts failures, and iterates autonomously.
+[Karpathy's autoresearch](https://github.com/karpathy/autoresearch) showed that an AI agent can run research autonomously: modify code, evaluate, keep or revert, repeat overnight. We apply the same loop to prompt engineering.
+
+An optimizer agent (Claude Opus, running in Claude Code) iteratively rewrites a support agent's system prompt. Each iteration, it runs Claude Sonnet against 10 frozen adversarial test cases, collects accuracy signals from a proportional scorer, keeps improvements, reverts regressions, and repeats. The whole cycle is driven by [`program.md`](program.md), which defines the optimization strategy. The human writes the meta-instructions and goes to sleep.
+
+The agent under test is a customer support bot for a fictional SaaS company, realistic enough that the failure modes mirror production: attention dilution from long account contexts, deep policy chains where shortcuts give wrong answers, and the model's stubborn instinct to call lookup tools instead of acting on data it already has.
 
 | | Karpathy's autoresearch | This project |
 |---|---|---|
