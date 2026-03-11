@@ -2,15 +2,13 @@
 
 **0.05 to 0.80 accuracy in 15 experiments.** An AI agent autonomously optimizes a support agent's system prompt overnight while you sleep.
 
-Adapted from [Karpathy's autoresearch](https://github.com/karpathy/autoresearch). We use a fictional SaaS company (Nexus) with realistic support policies as the test domain.
+Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch). We apply the same modify-evaluate-keep/revert loop to prompt engineering for a customer support agent, using a fictional SaaS company (Nexus) with realistic policies as the test domain.
 
 ![Experiment Progress](experiments/progress.png)
 
 ## The Idea
 
-Karpathy's [autoresearch](https://github.com/karpathy/autoresearch) showed that an AI agent can run ML research autonomously: modify `train.py`, run a training experiment, check `val_bpb`, keep or revert, repeat 100+ times overnight. The human writes `program.md` (the meta-instructions) and goes to sleep.
-
-**We apply the same loop to prompt engineering.** Instead of optimizing model weights via code changes, we optimize agent behavior via system prompt changes. Instead of `val_bpb`, we use deterministic tool-call accuracy against a test suite of hard support scenarios.
+Prompt engineering is usually vibes: tweak wording, eyeball outputs, repeat. We wanted to make it rigorous. That means a frozen test suite the optimizer can't touch, a deterministic scorer with no LLM judge, a <1000 character budget to prevent overfitting, and constraints against reward hacking (no test-case-specific instructions allowed). The optimizer agent forms hypotheses, edits one file (`system_prompt.md`), evaluates against hard adversarial cases, keeps improvements, reverts failures, and iterates autonomously.
 
 | | Karpathy's autoresearch | This project |
 |---|---|---|
@@ -22,6 +20,7 @@ Karpathy's [autoresearch](https://github.com/karpathy/autoresearch) showed that 
 | **Cost** | GPU compute | ~$0.10/experiment in API calls |
 | **Optimizer** | Claude Opus (via Claude Code) | Claude Opus (via Claude Code) |
 | **Base model** | GPT-2 (124M params) | Claude Sonnet 4.6 |
+| **Test data** | text in, text out (next-token prediction) | support requests in, tool calls out (agent actions) |
 | **Meta-instructions** | `program.md` tells agent how to think about ML research | `program.md` tells agent how to think about prompt engineering |
 
 The core insight is the same: **a well-written `program.md` turns an AI agent into an autonomous researcher.** The agent forms hypotheses, runs experiments, analyzes failures, and iterates without human intervention.
@@ -53,24 +52,24 @@ A key challenge: tool calls are discrete (right tool or wrong tool), but optimiz
 
 We designed the scorer to mimic a continuous loss function. Here's how every case is scored:
 
-| Scenario | Expected | Agent output | Score | Why |
+| Scenario | Score | Why | Expected | Agent output |
 |---|---|---|---|---|
-| Wrong tool | `escalate_to_billing(...)` | `issue_full_refund(...)` | **0.0** | Wrong tool = zero, always. No partial credit for similar tools. |
-| Right tool, all args correct | `issue_partial_refund(id="X", amount=2754.73, reason="policy")` | `issue_partial_refund(id="X", amount=2754.73, reason="policy")` | **1.0** | 3/3 args match |
-| Right tool, most args correct | `issue_partial_refund(id="X", amount=2754.73, reason="policy")` | `issue_partial_refund(id="X", amount=2764.11, reason="policy")` | **0.67** | 2/3 args match (amount off by $10) |
-| Right tool, one arg correct | `escalate_to_account_manager(id="X", reason="unverified")` | `escalate_to_account_manager(id="X", reason="enterprise")` | **0.5** | 1/2 args match (wrong reason) |
-| Right tool, no args correct | `issue_full_refund(id="X", charge="C", reason="30day")` | `issue_full_refund(id="Y", charge="D", reason="cooling")` | **0.0** | 0/3 args match |
-| Right tool, extra args | `escalate_to_billing(id="X", reason="wire")` | `escalate_to_billing(id="X", reason="wire", priority="high")` | **1.0** | All expected args present. Extra args ignored. |
-| Right tool, no args expected | `no_action()` | `no_action(message="...")` | **1.0** | No expected args to match. |
+| Wrong tool | **0.0** | Wrong tool = zero, always. No partial credit for similar tools. | `escalate_to_billing(...)` | `issue_full_refund(...)` |
+| Right tool, all args correct | **1.0** | 3/3 args match | `issue_partial_refund(id="X", amount=2754.73, reason="policy")` | `issue_partial_refund(id="X", amount=2754.73, reason="policy")` |
+| Right tool, most args correct | **0.67** | 2/3 args match (amount off by $10) | `issue_partial_refund(id="X", amount=2754.73, reason="policy")` | `issue_partial_refund(id="X", amount=2764.11, reason="policy")` |
+| Right tool, one arg correct | **0.5** | 1/2 args match (wrong reason) | `escalate_to_account_manager(id="X", reason="unverified")` | `escalate_to_account_manager(id="X", reason="enterprise")` |
+| Right tool, no args correct | **0.0** | 0/3 args match | `issue_full_refund(id="X", charge="C", reason="30day")` | `issue_full_refund(id="Y", charge="D", reason="cooling")` |
+| Right tool, extra args | **1.0** | All expected args present. Extra args ignored. | `escalate_to_billing(id="X", reason="wire")` | `escalate_to_billing(id="X", reason="wire", priority="high")` |
+| Right tool, no args expected | **1.0** | No expected args to match. | `no_action()` | `no_action(message="...")` |
 
 For multi-call test cases (where the agent must make several tool calls), sequence can matter:
 
-| Scenario | Expected sequence | Agent output | Score | Why |
+| Scenario | Score | Why | Expected sequence | Agent output |
 |---|---|---|---|---|
-| Correct sequence | `verify_identity(...)` then `cancel(...)` | `verify_identity(...)` then `cancel(...)` | **1.0** | Position 1 matches, position 2 matches. (1.0 + 1.0) / 2 |
-| Wrong sequence | `verify_identity(...)` then `cancel(...)` | `cancel(...)` then `verify_identity(...)` | **0.0** | Position 1: cancel vs expected verify = wrong tool. Position 2: verify vs expected cancel = wrong tool. (0.0 + 0.0) / 2 |
-| Partial sequence | `verify(...)` then `cancel(...)` then `refund(...)` | `verify(...)` then `cancel(...)` | **0.67** | Positions 1-2 match, position 3 missing. (1.0 + 1.0 + 0.0) / 3 |
-| Independent calls (unordered) | `refund(sub_A)` and `cancel(sub_B)` | `cancel(sub_B)` and `refund(sub_A)` | **1.0** | Order doesn't matter. Best-match finds each. |
+| Correct sequence | **1.0** | Position 1 matches, position 2 matches. (1.0 + 1.0) / 2 | `verify_identity(...)` then `cancel(...)` | `verify_identity(...)` then `cancel(...)` |
+| Wrong sequence | **0.0** | Position 1: cancel vs expected verify = wrong tool. Position 2: verify vs expected cancel = wrong tool. (0.0 + 0.0) / 2 | `verify_identity(...)` then `cancel(...)` | `cancel(...)` then `verify_identity(...)` |
+| Partial sequence | **0.67** | Positions 1-2 match, position 3 missing. (1.0 + 1.0 + 0.0) / 3 | `verify(...)` then `cancel(...)` then `refund(...)` | `verify(...)` then `cancel(...)` |
+| Independent calls (unordered) | **1.0** | Order doesn't matter. Best-match finds each. | `refund(sub_A)` and `cancel(sub_B)` | `cancel(sub_B)` and `refund(sub_A)` |
 
 Each test case is marked `ordered` or `unordered`. Ordered cases use positional matching (call 1 vs call 1, call 2 vs call 2). Unordered cases use best-match without reuse. This means skipping a mandatory prerequisite like identity verification is harshly penalized: every subsequent call lands in the wrong position.
 
