@@ -1,8 +1,13 @@
-# Autoresearch for Agents
+# Autoresearch for Agents from Scratch
 
-**0.05 to 0.80 accuracy in 15 experiments.** An AI agent autonomously optimizes a support agent's system prompt overnight while you sleep.
+**0.05 to 0.80 accuracy in 15 experiments.** An AI agent autonomously optimizes a support agent's system prompt with no intervention.
 
-Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch). We apply the same modify-evaluate-keep/revert loop to prompt engineering for a customer support agent, using a fictional SaaS company (Nexus) with realistic policies as the test domain.
+Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch). We apply the same modify-evaluate-keep/revert loop to prompt engineering for a customer support agent with realistic policies as the test domain.
+
+Core components
+- hard test generator
+- metric for partial success gradients
+- auto-improvement program
 
 ![Experiment Progress](experiments/progress.png)
 
@@ -17,9 +22,8 @@ Here is how this project compares to Karpathy's training optimisation loop.
 | | Karpathy's autoresearch | This project |
 |---|---|---|
 | **What changes** | `train.py` | `system_prompt.md` |
-| **Constraint** | code must run and produce `val_bpb` | prompt must be <1000 chars |
+| **Constraint** | run training for 5 min | prompt must be <1000 chars |
 | **Metric** | `val_bpb` (validation loss) | tool-call accuracy (0.0-1.0) |
-| **Eval cost** | run training for 5 min | run 10 API calls (~30s) |
 | **Search space** | hyperparameters, architecture | instructions, reasoning frameworks, decision logic |
 | **Cost** | GPU compute | ~$0.10/experiment in API calls |
 | **Optimizer** | Claude Opus (via Claude Code) | Claude Opus (via Claude Code) |
